@@ -5,10 +5,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import QRCode from 'react-native-qrcode-svg'
 
-export default function Menu(){
+export default function Menu({translateY}){
 
     return(
-        <Container>
+        <Container style={{
+            opacity: translateY.interpolate({
+                    inputRange: [0,150],
+                    outputRange: [0,1],
+                })
+        }}>
             <Code>
                 <QRCode
                     value={'https://github.com/wellespaiva-dev'}

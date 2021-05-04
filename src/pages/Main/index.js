@@ -12,6 +12,8 @@ import {PanGestureHandler, State} from 'react-native-gesture-handler'
 
 export default function Main(){
 
+  let offset = 0;
+
   const translateY = new Animated.Value(0);
 
   const animatedEvent = Animated.event(
@@ -22,33 +24,35 @@ export default function Main(){
         },
       },
     ],
-    {useNativeDriver: true}
-  )
+    {useNativeDriver: true},
+  );
 
   function onHandlerStateChange(event){
-
+    if(event.nativeEvent.oldState === State.ACTIVE){
+      const { translationY} = event.nativeEvent
+      offset += translationY
+    }
   }
 
   return(
     <Container>
        <Header />
       <Content>
-        <Menu/>
+        <Menu translateY={translateY}/>
 
         <PanGestureHandler
           onGestureEvent={animatedEvent}
           onHandlerStateChange={onHandlerStateChange}
         >
           <Card style={{
-              transform: [{
-                translateY: translateY.interpolate({
-                  inputRange:[-350,0,380],
-                  outputRane: [-50,0,380],
-                  extrapolate: "clamp",
-                }),
-              }],
-            }
-          }>
+            transform: [{
+              translateY: translateY.interpolate({
+                inputRange: [0,380],
+                outputRange: [0,380],
+                extrapolate: 'clamp',
+              }),
+            }],
+          }}>
             <CardHeader>
               <Icon name='attach-money' size={28} color="#666"/>
               <Icon name='visibility-off' size={28} color="#666"/>
@@ -64,7 +68,7 @@ export default function Main(){
         </PanGestureHandler>
 
       </Content>
-       <Tabs />
+       <Tabs translateY={translateY}/>
     </Container>
   );
 
